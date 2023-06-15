@@ -50,7 +50,7 @@ class profile_field_namecoach extends profile_field_base {
         if (!$user) return '';
         $playback = $this->get_namecoach_playback($user);
         if (!$playback) {
-            $msg = get_string('msg_unavailable', 'profilefield_namecaoch');
+            $msg = get_string('msg_unavailable', 'profilefield_namecoach');
             return "<em>{$msg}</em>";
         }
         return $playback.'&nbsp;'.fullname($this->get_profile_user());
