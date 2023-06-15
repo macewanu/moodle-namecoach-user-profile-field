@@ -41,7 +41,7 @@ class profile_define_namecoach extends profile_define_base {
         $form->setType('defaultdata', PARAM_BOOL);
         
         // Param 1 for text type contains a the NameCoach API token.
-        $form->addElement('text', 'param1', 'NameCoach API token');
+        $form->addElement('text', 'param1', get_string('api_token', 'profilefield_namecoach'));
         $form->setType('param1', PARAM_TEXT);
     }
 }

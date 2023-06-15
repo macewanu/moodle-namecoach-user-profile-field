@@ -28,3 +28,4 @@ $string['privacy:metadata:profilefield_checkbox:fieldid'] = 'The ID of the profi
 $string['privacy:metadata:profilefield_checkbox:data'] = 'The NameCoach user profile field user data';
 $string['privacy:metadata:profilefield_checkbox:dataformat'] = 'The format of NameCoach user profile field user data';
 $string['privacy:metadata:profilefield_checkbox:tableexplanation'] = 'Additional profile data';
+$string['api_token'] = 'NameCoach API token';
