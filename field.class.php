@@ -49,6 +49,10 @@ class profile_field_namecoach extends profile_field_base {
         $user = $this->get_profile_user();
         if (!$user) return '';
         $playback = $this->get_namecoach_playback($user);
+        if (!$playback) {
+            $msg = get_string('msg_unavailable', 'profilefield_namecaoch');
+            return "<em>{$msg}</em>";
+        }
         return $playback.'&nbsp;'.fullname($this->get_profile_user());
     }
 
@@ -88,6 +92,7 @@ class profile_field_namecoach extends profile_field_base {
         $curl->setHeader($header);
         $result = $curl->get($location);
         $nmdata = json_decode($result, true);
+        if (!$nmdata['Response']['participants'][0]['embed_image']) return false;
         
         return $nmdata['Response']['participants'][0]['embed_image'];
     }

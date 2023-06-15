@@ -24,6 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2023061500;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2023061501;        // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2021051100;        // Requires this Moodle version.
 $plugin->component = 'profilefield_namecoach'; // Full name of the plugin (used for diagnostics)
