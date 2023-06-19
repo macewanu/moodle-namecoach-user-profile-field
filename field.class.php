@@ -48,7 +48,8 @@ class profile_field_namecoach extends profile_field_base {
         $options->para = false;
         $user = $this->get_profile_user();
         if (!$user) return '';
-        $playback = $this->get_namecoach_playback($user);
+        $nmdata = get_namecoach_data($user);
+        $playback = $this->get_namecoach_playback($nmdata);
         if (!$playback) {
             $msg = get_string('msg_unavailable', 'profilefield_namecoach');
             return "<em>{$msg}</em>";
@@ -78,11 +79,11 @@ class profile_field_namecoach extends profile_field_base {
     }
     
     /**
-    * Retrieve the name playback widget from NameCoach
+    * Retrieve the NameCoach data from NameCoach
     *
-    * @return string namecoach html
+    * @return object namecoach data
     */
-    protected function get_namecoach_playback($user) {
+    protected function get_namecoach_data($user) {
         $location = "https://www.name-coach.com/api/private/v5/participants?email_list={$user->email}&include=embeddables";
         $header = [
             'Accept: application/json',
@@ -92,9 +93,20 @@ class profile_field_namecoach extends profile_field_base {
         $curl->setHeader($header);
         $result = $curl->get($location);
         $nmdata = json_decode($result, true);
-        if (!$nmdata['Response']['participants'][0]['embed_image']) return false;
+        if (!$nmdata['Response']) return false;
         
-        return $nmdata['Response']['participants'][0]['embed_image'];
+        return $nmdata['Response'];
+    }    
+    
+    /**
+    * Retrieve the name playback widget from NameCoach data
+    *
+    * @return string namecoach html
+    */
+    protected function get_namecoach_playback($nmdata) {
+        if (!$nmdata['participants'][0]['embed_image']) return false;
+        
+        return $nmdata['participants'][0]['embed_image'];
     }
 
     /**
