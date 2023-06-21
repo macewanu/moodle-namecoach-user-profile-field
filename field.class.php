@@ -48,13 +48,17 @@ class profile_field_namecoach extends profile_field_base {
         $options->para = false;
         $user = $this->get_profile_user();
         if (!$user) return '';
-        $nmdata = get_namecoach_data($user);
+        $nmdata = $this->get_namecoach_data($user);
         $playback = $this->get_namecoach_playback($nmdata);
         if (!$playback) {
             $msg = get_string('msg_unavailable', 'profilefield_namecoach');
             return "<em>{$msg}</em>";
         }
-        return $playback.'&nbsp;'.fullname($this->get_profile_user());
+        $displayname = $this->get_namecoach_displayname($nmdata);
+        if (empty($displayname)) {
+            $displayname = fullname($this->get_profile_user());
+        }
+        return $playback.'&nbsp;'.$displayname;
     }
 
     /**
@@ -93,9 +97,9 @@ class profile_field_namecoach extends profile_field_base {
         $curl->setHeader($header);
         $result = $curl->get($location);
         $nmdata = json_decode($result, true);
-        if (!$nmdata['Response']) return false;
+        if (!$nmdata['Response']['participants'][0]) return false;
         
-        return $nmdata['Response'];
+        return $nmdata['Response']['participants'][0];
     }    
     
     /**
@@ -104,9 +108,24 @@ class profile_field_namecoach extends profile_field_base {
     * @return string namecoach html
     */
     protected function get_namecoach_playback($nmdata) {
-        if (!$nmdata['participants'][0]['embed_image']) return false;
+        if (!$nmdata['embed_image']) return false;
         
-        return $nmdata['participants'][0]['embed_image'];
+        return $nmdata['embed_image'];
+    }
+
+    /**
+    * Retrieve the display name (with phonetics if available) from NameCoach data
+    *
+    * @return string namecoach html
+    */
+    protected function get_namecoach_displayname($nmdata) {
+        $displayname = "{$nmdata['first_name']} {$nmdata['last_name']}";
+    
+        if (!empty($nmdata['phonetic_spelling'])) {
+            $displayname .= " ({$nmdata['phonetic_spelling']})";
+        }
+        
+        return $displayname;
     }
 
     /**
