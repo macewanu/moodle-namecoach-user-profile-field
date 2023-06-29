@@ -27,10 +27,27 @@ class profile_field_namecoach extends profile_field_base {
      * @param moodleform $mform
      */
     public function edit_field_add($mform) {
+        // Check for NameCoach recording(s).
+        $has_recording = true;
+        $user = $this->get_profile_user();
+        $nmdata = $this->get_namecoach_data($user);
+        if (!$nmdata) {
+            $has_recording = false;
+        }
+
         // Create the form field.
-        $checkbox = $mform->addElement('advcheckbox', $this->inputname, format_string($this->field->name));
+        $label = format_string($this->field->name);
+        if (!$has_recording) {
+            $label .= ' (You must use the Hear my name activity to record your name at least once before you can enable this field)';
+        }
+        $checkbox = $mform->addElement('advcheckbox', $this->inputname, $label);
         if ($this->data == '1') {
             $checkbox->setChecked(true);
+        }
+        // Cannot enbale if no recording is present.
+        if (!$has_recording) {
+            $checkbox->setChecked(false);
+            $checkbox->freeze();
         }
         $mform->setType($this->inputname, PARAM_BOOL);
         if ($this->is_required() and !has_capability('moodle/user:update', context_system::instance())) {
