@@ -17,12 +17,12 @@
 /**
  * Privacy class for requesting user data.
  *
- * @package    profilefield_checkbox
- * @copyright  2018 Mihail Geshoski <mihail@moodle.com>
+ * @package    profilefield_namecoach
+ * @copyright  2023 Erwin Veugelers - MacEwan University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace profilefield_checkbox\privacy;
+namespace profilefield_namecoach\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -51,11 +51,11 @@ class provider implements
      */
     public static function get_metadata(collection $collection) : collection {
         return $collection->add_database_table('user_info_data', [
-            'userid' => 'privacy:metadata:profilefield_checkbox:userid',
-            'fieldid' => 'privacy:metadata:profilefield_checkbox:fieldid',
-            'data' => 'privacy:metadata:profilefield_checkbox:data',
-            'dataformat' => 'privacy:metadata:profilefield_checkbox:dataformat'
-        ], 'privacy:metadata:profilefield_checkbox:tableexplanation');
+            'userid' => 'privacy:metadata:profilefield_namecoach:userid',
+            'fieldid' => 'privacy:metadata:profilefield_namecoach:fieldid',
+            'data' => 'privacy:metadata:profilefield_namecoach:data',
+            'dataformat' => 'privacy:metadata:profilefield_namecoach:dataformat'
+        ], 'privacy:metadata:profilefield_namecoach:tableexplanation');
     }
 
     /**
@@ -128,7 +128,7 @@ class provider implements
                         'data' => $result->data
                     ];
                     \core_privacy\local\request\writer::with_context($context)->export_data([
-                        get_string('pluginname', 'profilefield_checkbox')], $data);
+                        get_string('pluginname', 'profilefield_namecoach')], $data);
                 }
             }
         }

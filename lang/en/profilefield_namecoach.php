@@ -23,10 +23,10 @@
  */
 
 $string['pluginname'] = 'NameCoach';
-$string['privacy:metadata:profilefield_checkbox:userid'] = 'The ID of the user whose data is stored by the NameCoach user profile field';
-$string['privacy:metadata:profilefield_checkbox:fieldid'] = 'The ID of the profile field';
-$string['privacy:metadata:profilefield_checkbox:data'] = 'The NameCoach user profile field user data';
-$string['privacy:metadata:profilefield_checkbox:dataformat'] = 'The format of NameCoach user profile field user data';
-$string['privacy:metadata:profilefield_checkbox:tableexplanation'] = 'Additional profile data';
+$string['privacy:metadata:profilefield_namecoach:userid'] = 'The ID of the user whose data is stored by the NameCoach user profile field';
+$string['privacy:metadata:profilefield_namecoach:fieldid'] = 'The ID of the profile field';
+$string['privacy:metadata:profilefield_namecoach:data'] = 'The NameCoach user profile field user data';
+$string['privacy:metadata:profilefield_namecoach:dataformat'] = 'The format of NameCoach user profile field user data';
+$string['privacy:metadata:profilefield_namecoach:tableexplanation'] = 'Additional profile data';
 $string['api_token'] = 'NameCoach API token';
 $string['msg_unavailable'] = 'This function is currently unavailable';
