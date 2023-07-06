@@ -41,6 +41,8 @@ class profile_field_namecoach extends profile_field_base {
         if (!$has_recording) {
             $label .= ' (You must use the Hear my name activity to record your name at least once before you can enable this field)';
         }
+        $widget = $this->get_namecoach_recording_widget($user);
+        $label .= $widget;
         $checkbox = $mform->addElement('advcheckbox', $this->inputname, $label);
         if ($this->data == '1') {
             $checkbox->setChecked(true);
@@ -68,15 +70,16 @@ class profile_field_namecoach extends profile_field_base {
         if (!$user) return '';
         $nmdata = $this->get_namecoach_data($user);
         $playback = $this->get_namecoach_playback($nmdata);
+        $widget = $this->get_namecoach_recording_widget($user);
         if (!$playback) {
             $msg = get_string('msg_unavailable', 'profilefield_namecoach');
-            return "<em>{$msg}</em>";
+            return "<em>{$msg}</em>".$widget;
         }
         $displayname = $this->get_namecoach_displayname($nmdata);
         if (empty($displayname)) {
             $displayname = fullname($this->get_profile_user());
         }
-        return $playback.'&nbsp;'.$displayname;
+        return $playback.'&nbsp;'.$displayname.$widget;
     }
 
     /**
@@ -144,6 +147,44 @@ class profile_field_namecoach extends profile_field_base {
         }
         
         return $displayname;
+    }
+
+    /**
+    * Retrieve the display name (with phonetics if available) from NameCoach data
+    *
+    * @return string namecoach recording widget html
+    */
+    protected function get_namecoach_recording_widget($user) {
+        $apitoken = $this->field->param1;
+        $accesscode = '19B215';
+        $widgethtml =
+            "
+            <script type=\"text/javascript\" src=\"https://s3.us-east-2.amazonaws.com/nc-widget-v3/bundle.js\"> </script>
+            <button id=\"nc-button\" type=\"button\"
+                data-toggle=\"nc-widget\"
+                data-attributes-email-value=\"{$user->email}\"
+                data-attributes-email-presentation=\"hidden\"
+                data-attributes-first-name-value=\"{$user->firstname}\"
+                data-attributes-first-name-presentation=\"readonly\"
+                data-attributes-last-name-value=\"{$user->lastname}\"
+                data-attributes-last-name-presentation=\"readonly\"
+                class=\"btn btn-link\">
+                Record your name
+            </button>
+            <script>
+                ncE(function() {
+                    ncE.configure(function(config) {
+                        config.eventCode = \"{$accesscode}\";
+                        config.accessToken = \"{$apitoken}\";
+                        config.dictionary = {
+                            audio_recording_desc: 'Record your name as you would like to have it pronounced.',
+                            modal_header: 'MacEwan University NameCoach Recording'
+                        };
+                    });
+                });
+            </script>
+            ";
+        return $widgethtml;
     }
 
     /**
