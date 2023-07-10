@@ -157,8 +157,17 @@ class profile_field_namecoach extends profile_field_base {
     * @return string namecoach recording widget html
     */
     protected function get_namecoach_recording_widget($user) {
+        global $USER;
+
+        // Only allow recording when the current user is the profile user.
+        if (!($USER->id == $user->id)) {
+            return '';
+        }
+
         $apitoken = $this->field->param1;
         $accesscode = $this->field->param2;
+        // The window.onload CSS kludge (near bottom) messes with the default Moodle
+        // layout to allow the iFrame to run full size. But I don't like it.
         $widgethtml =
             "
             <script type=\"text/javascript\" src=\"https://s3.us-east-2.amazonaws.com/nc-widget-v3/bundle.js\"> </script>
