@@ -29,4 +29,5 @@ $string['privacy:metadata:profilefield_namecoach:data'] = 'The NameCoach user pr
 $string['privacy:metadata:profilefield_namecoach:dataformat'] = 'The format of NameCoach user profile field user data';
 $string['privacy:metadata:profilefield_namecoach:tableexplanation'] = 'Additional profile data';
 $string['api_token'] = 'NameCoach API token';
+$string['access_code'] = 'Name page access code';
 $string['msg_unavailable'] = 'This function is currently unavailable';

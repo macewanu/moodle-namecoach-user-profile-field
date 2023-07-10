@@ -41,7 +41,9 @@ class profile_field_namecoach extends profile_field_base {
         if (!$has_recording) {
             $label .= ' (You must use the Hear my name activity to record your name at least once before you can enable this field)';
         }
-        $widget = $this->get_namecoach_recording_widget($user);
+        //$widget = $this->get_namecoach_recording_widget($user);
+        // Not rendering properly on edit page. Leave out for now.
+        $widget = '';
         $label .= $widget;
         $checkbox = $mform->addElement('advcheckbox', $this->inputname, $label);
         if ($this->data == '1') {
@@ -156,7 +158,7 @@ class profile_field_namecoach extends profile_field_base {
     */
     protected function get_namecoach_recording_widget($user) {
         $apitoken = $this->field->param1;
-        $accesscode = '19B215';
+        $accesscode = $this->field->param2;
         $widgethtml =
             "
             <script type=\"text/javascript\" src=\"https://s3.us-east-2.amazonaws.com/nc-widget-v3/bundle.js\"> </script>
