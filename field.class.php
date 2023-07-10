@@ -182,6 +182,10 @@ class profile_field_namecoach extends profile_field_base {
                         };
                     });
                 });
+                window.onload = (event) => {
+                    let cards = document.querySelectorAll('section.card');
+                    cards.forEach((el) => { el.style.setProperty('position', 'unset') });
+                };
             </script>
             ";
         return $widgethtml;
