@@ -57,12 +57,12 @@ class profile_field_namecoach extends profile_field_base {
             return "<em>{$msg}</em>";
         }
         $nmdata = $nmdata['participants'][0];
+        $widget = $this->get_namecoach_recording_widget($user);
         $playback = $this->get_namecoach_playback($nmdata);
         if (!$playback) {
             $msg = get_string('msg_norecording', 'profilefield_namecoach');
             return "<em>{$msg}</em>".$widget;
         }
-        $widget = $this->get_namecoach_recording_widget($user);
         $displayname = $this->get_namecoach_displayname($nmdata);
         if (empty($displayname)) {
             $displayname = fullname($this->get_profile_user());
