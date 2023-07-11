@@ -32,4 +32,4 @@ $string['api_token'] = 'NameCoach API token';
 $string['access_code'] = 'Name page access code';
 $string['api_endpoint'] = 'NameCoach API endpoint URL';
 $string['msg_unavailable'] = 'This function is currently unavailable';
-$string['msg_norecording'] = 'No name recording available';
+$string['msg_norecording'] = 'No recording available';
