@@ -28,6 +28,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class profile_define_namecoach extends profile_define_base {
+    const DEFAULT_NAMECOACH_API_ENDPOINT = 'https://www.name-coach.com';
 
     /**
      * Add elements for creating/editing a checkbox profile field.
@@ -47,6 +48,11 @@ class profile_define_namecoach extends profile_define_base {
         // Param 2 for text type contains a the NameCoach name page access code.
         $form->addElement('text', 'param2', get_string('access_code', 'profilefield_namecoach'));
         $form->setType('param2', PARAM_TEXT);
+
+        // Param 3 for text type contains a the NameCoach API endpoint URL.
+        $form->addElement('text', 'param3', get_string('api_endpoint', 'profilefield_namecoach'));
+        $form->setType('param3', PARAM_TEXT);
+        $form->setDefault('param3', self::DEFAULT_NAMECOACH_API_ENDPOINT);
     }
 }
 

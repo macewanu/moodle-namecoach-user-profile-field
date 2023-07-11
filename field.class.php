@@ -28,32 +28,13 @@ class profile_field_namecoach extends profile_field_base {
      * @param moodleform $mform
      */
     public function edit_field_add($mform) {
-        // Check for NameCoach recording(s).
-        $has_recording = true;
-        $user = $this->get_profile_user();
-        $nmdata = $this->get_namecoach_data($user);
-        if (!$nmdata) {
-            $has_recording = false;
-        }
-
         // Create the form field.
-        $label = format_string($this->field->name);
-        if (!$has_recording) {
-            $label .= ' (You must use the Hear my name activity to record your name at least once before you can enable this field)';
-        }
-        //$widget = $this->get_namecoach_recording_widget($user);
-        // Not rendering properly on edit page. Leave out for now.
-        $widget = '';
-        $label .= $widget;
+        $label = 'Enable "'.format_string($this->field->name).'"';
         $checkbox = $mform->addElement('advcheckbox', $this->inputname, $label);
         if ($this->data == '1') {
             $checkbox->setChecked(true);
         }
-        // Cannot enbale if no recording is present.
-        if (!$has_recording) {
-            $checkbox->setChecked(false);
-            $checkbox->freeze();
-        }
+
         $mform->setType($this->inputname, PARAM_BOOL);
         if ($this->is_required() and !has_capability('moodle/user:update', context_system::instance())) {
             $mform->addRule($this->inputname, get_string('required'), 'nonzero', null, 'client');
@@ -71,12 +52,17 @@ class profile_field_namecoach extends profile_field_base {
         $user = $this->get_profile_user();
         if (!$user) return '';
         $nmdata = $this->get_namecoach_data($user);
-        $playback = $this->get_namecoach_playback($nmdata);
-        $widget = $this->get_namecoach_recording_widget($user);
-        if (!$playback) {
+        if (!$nmdata) {
             $msg = get_string('msg_unavailable', 'profilefield_namecoach');
+            return "<em>{$msg}</em>";
+        }
+        $nmdata = $nmdata['participants'][0];
+        $playback = $this->get_namecoach_playback($nmdata);
+        if (!$playback) {
+            $msg = get_string('msg_norecording', 'profilefield_namecoach');
             return "<em>{$msg}</em>".$widget;
         }
+        $widget = $this->get_namecoach_recording_widget($user);
         $displayname = $this->get_namecoach_displayname($nmdata);
         if (empty($displayname)) {
             $displayname = fullname($this->get_profile_user());
@@ -111,7 +97,7 @@ class profile_field_namecoach extends profile_field_base {
     * @return object namecoach data
     */
     protected function get_namecoach_data($user) {
-        $location = "https://www.name-coach.com/api/private/v5/participants?email_list={$user->email}&include=embeddables";
+        $location = "{$this->field->param3}/api/private/v5/participants?email_list={$user->email}&include=embeddables";
         $header = [
             'Accept: application/json',
             "Authorization: {$this->field->param1}",
@@ -120,9 +106,9 @@ class profile_field_namecoach extends profile_field_base {
         $curl->setHeader($header);
         $result = $curl->get($location);
         $nmdata = json_decode($result, true);
-        if (!$nmdata['Response']['participants'][0]) return false;
+        if (!$nmdata['Response']) return false;
         
-        return $nmdata['Response']['participants'][0];
+        return $nmdata['Response'];
     }    
     
     /**
