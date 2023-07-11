@@ -106,7 +106,10 @@ class profile_field_namecoach extends profile_field_base {
         $curl->setHeader($header);
         $result = $curl->get($location);
         $nmdata = json_decode($result, true);
-        if (!$nmdata['Response']) return false;
+        if (!$nmdata['Response']) {
+            trigger_error(htmlspecialchars($result));
+            return false;
+        };
         
         return $nmdata['Response'];
     }    
