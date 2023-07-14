@@ -53,6 +53,10 @@ class profile_define_namecoach extends profile_define_base {
         $form->addElement('text', 'param3', get_string('api_endpoint', 'profilefield_namecoach'));
         $form->setType('param3', PARAM_TEXT);
         $form->setDefault('param3', self::DEFAULT_NAMECOACH_API_ENDPOINT);
+
+        // Param 4 for text type contains a the NameCoach name page ID (event code or slug).
+        $form->addElement('text', 'param4', get_string('name_page_id', 'profilefield_namecoach'));
+        $form->setType('param2', PARAM_TEXT);
     }
 }
 

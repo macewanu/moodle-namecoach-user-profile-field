@@ -56,7 +56,6 @@ class profile_field_namecoach extends profile_field_base {
             $msg = get_string('msg_unavailable', 'profilefield_namecoach');
             return "<em>{$msg}</em>";
         }
-        $nmdata = $nmdata['participants'][0];
         $widget = $this->get_namecoach_recording_widget($user);
         $playback = $this->get_namecoach_playback($nmdata);
         if (!$playback) {
@@ -97,7 +96,12 @@ class profile_field_namecoach extends profile_field_base {
     * @return object namecoach data
     */
     protected function get_namecoach_data($user) {
-        $location = "{$this->field->param3}/api/private/v5/participants?email_list={$user->email}&include=embeddables";
+        // More precise data gathering based on name page identifier in (where?))
+        $apitoken = $this->field->param1;
+        $namepageid = $this->field->param4;
+        $endpoint = $this->field->param3;
+        $location = "{$endpoint}/api/private/v4/name_pages/{$namepageid}/participants/{$user->email}?include=embeddables";
+
         $header = [
             'Accept: application/json',
             "Authorization: {$this->field->param1}",
@@ -106,12 +110,12 @@ class profile_field_namecoach extends profile_field_base {
         $curl->setHeader($header);
         $result = $curl->get($location);
         $nmdata = json_decode($result, true);
-        if (!$nmdata['Response']) {
+        if (!$nmdata['participant']) {
             trigger_error(htmlspecialchars($result));
             return false;
         };
         
-        return $nmdata['Response'];
+        return $nmdata['participant'];
     }    
     
     /**
@@ -159,16 +163,31 @@ class profile_field_namecoach extends profile_field_base {
         // layout to allow the iFrame to run full size. But I don't like it.
         $widgethtml =
             "
+            <div class=\"modal\" id=\"nc-modal\" role=\"dialog\" tabindex=\"-1\">
+                <div class=\"modal-dialog\" role=\"document\">
+                    <div class=\"modal-content\">
+                        <div class=\"modal-header\">
+                            <h5 class=\"modal-title\">Record your name</h5>
+                            <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
+                                <span aria-hidden=\"true\">&times;</span>
+                            </button>
+                        </div>
+                        <div class=\"modal-body\" style=\"padding: .7em;\">
+                            <div id=\"nc-embed\"
+                                style=\"position: relative; min-height: 480px;\"
+                                data-mode=\"embedded\" data-attributes-email-value=\"{$user->email}\"
+                                data-attributes-email-presentation=\"hidden\"
+                                data-attributes-first-name-value=\"{$user->firstname}\"
+                                data-attributes-first-name-presentation=\"readonly\"
+                                data-attributes-last-name-value=\"{$user->lastname}\"
+                                data-attributes-last-name-presentation=\"readonly\">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <script type=\"text/javascript\" src=\"https://s3.us-east-2.amazonaws.com/nc-widget-v3/bundle.js\"> </script>
-            <button id=\"nc-button\" type=\"button\"
-                data-toggle=\"nc-widget\"
-                data-attributes-email-value=\"{$user->email}\"
-                data-attributes-email-presentation=\"hidden\"
-                data-attributes-first-name-value=\"{$user->firstname}\"
-                data-attributes-first-name-presentation=\"readonly\"
-                data-attributes-last-name-value=\"{$user->lastname}\"
-                data-attributes-last-name-presentation=\"readonly\"
-                class=\"btn btn-link\">
+            <button id=\"nc-button\" class=\"btn btn-link\" data-toggle=\"modal\" data-target=\"#nc-modal\">
                 Record your name
             </button>
             <script>
@@ -183,8 +202,9 @@ class profile_field_namecoach extends profile_field_base {
                     });
                 });
                 window.onload = (event) => {
-                    let cards = document.querySelectorAll('section.card');
-                    cards.forEach((el) => { el.style.setProperty('position', 'unset') });
+                    $('#nc-modal').on('shown.bs.modal', function (event) {
+                        document.querySelector('#nc-embed').style.setProperty('height', document.querySelector('#nc-widget').contentDocument.body.getBoundingClientRect().height + 'px');
+                    });
                 };
             </script>
             ";
