@@ -51,12 +51,22 @@ class profile_field_namecoach extends profile_field_base {
         $options->para = false;
         $user = $this->get_profile_user();
         if (!$user) return '';
+        // Get the recording dasta from NameCoach
         $nmdata = $this->get_namecoach_data($user);
+        // Actual API errors, report unavailable
         if (!$nmdata) {
             $msg = get_string('msg_unavailable', 'profilefield_namecoach');
             return "<em>{$msg}</em>";
         }
+        // Widget is blank if profile user is not the current user
         $widget = $this->get_namecoach_recording_widget($user);
+        // No errors, but no recording exists
+        if ($nmdata['message'] == 'Not Found') {
+            $msg = get_string('msg_norecording', 'profilefield_namecoach');
+            return "<em>{$msg}</em>".$widget;
+        }
+        // Display playback widget
+        $nmdata = $nmdata['participant'];
         $playback = $this->get_namecoach_playback($nmdata);
         if (!$playback) {
             $msg = get_string('msg_norecording', 'profilefield_namecoach');
@@ -110,12 +120,11 @@ class profile_field_namecoach extends profile_field_base {
         $curl->setHeader($header);
         $result = $curl->get($location);
         $nmdata = json_decode($result, true);
-        if (!$nmdata['participant']) {
-            trigger_error(htmlspecialchars($result));
+        if (!$nmdata['participant'] && ($nmdata['message'] != 'Not Found')) {
             return false;
         };
         
-        return $nmdata['participant'];
+        return $nmdata;
     }    
     
     /**
