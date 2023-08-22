@@ -61,7 +61,7 @@ class profile_field_namecoach extends profile_field_base {
         // Widget is blank if profile user is not the current user
         $widget = $this->get_namecoach_recording_widget($user);
         // No errors, but no recording exists
-        if ($nmdata['message'] == 'Not Found') {
+        if (isset($nmdata['message']) && $nmdata['message'] == 'Not Found') {
             $msg = get_string('msg_norecording', 'profilefield_namecoach');
             return "<em>{$msg}</em>".$widget;
         }
@@ -120,7 +120,9 @@ class profile_field_namecoach extends profile_field_base {
         $curl->setHeader($header);
         $result = $curl->get($location);
         $nmdata = json_decode($result, true);
-        if (!$nmdata['participant'] && ($nmdata['message'] != 'Not Found')) {
+        if (!isset($nmdata['participant']) &&
+                (!isset($nmdata['message']) ||
+                ($nmdata['message'] != 'Not Found'))) {
             return false;
         };
         
